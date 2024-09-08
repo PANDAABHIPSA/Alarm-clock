@@ -1,0 +1,46 @@
+import datetime
+import tkinter as tk
+from tkinter import messagebox
+import time
+import threading
+
+class AlarmClock:
+    def _init_(self):
+        self.root = tk.Tk()
+        self.root.title("Alarm Clock")
+
+        # Create GUI components
+        self.time_label = tk.Label(self.root, font=('calibri', 40, 'bold'), background='black', foreground='green')
+        self.time_label.pack(fill='both', expand=1)
+
+        self.alarm_label = tk.Label(self.root, font=('calibri', 20, 'bold'), background='black', foreground='green')
+        self.alarm_label.pack(fill='both', expand=1)
+
+        self.alarm_entry = tk.Entry(self.root, font=('calibri', 20, 'bold'), width=10)
+        self.alarm_entry.pack(fill='both', expand=1)
+
+        self.set_alarm_button = tk.Button(self.root, text="Set Alarm", command=self.set_alarm)
+        self.set_alarm_button.pack(fill='both', expand=1)
+
+        self.update_time()
+        self.root.mainloop()
+
+    def update_time(self):
+        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        self.time_label.config(text=current_time)
+        self.root.after(1000, self.update_time)
+
+    def set_alarm(self):
+        alarm_time = self.alarm_entry.get()
+        self.alarm_label.config(text=f"Alarm set for {alarm_time}")
+        threading.Thread(target=self.check_alarm, args=(alarm_time,)).start()
+
+    def check_alarm(self, alarm_time):
+        while True:
+            time.sleep(1)
+            current_time = datetime.datetime.now().strftime("%H:%M:%S")
+            if current_time == alarm_time:
+                messagebox.showinfo("Alarm", "Wake Up!")
+
+if _name_ == "_main_":
+    alarm_clock = AlarmClock()
